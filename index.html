@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Real Time Currency Converter - Adli</title>
+  <style>
+    :root {
+      --primary: #0ea5e9;
+      --primary-hover: #0284c7;
+      --bg: #f8fafc;
+      --text: #1e293b;
+      --muted: #64748b;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1e293b;
+        --text: #f8fafc;
+        --muted: #94a3b8;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .container {
+      background: #ffffff;
+      background-color: var(--bg);
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid #e2e8f0;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    label {
+      font-weight: 500;
+      margin: 0.75rem 0 0.25rem;
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 8px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background-color: #f9fafb;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 0.5rem;
+    }
+
+    button:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .credit {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    .credit a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .credit a:hover {
+      text-decoration: underline;
+    }
+
+    .result {
+      margin-top: 1rem;
+      padding: 12px;
+      background-color: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      font-weight: 600;
+      text-align: center;
+      font-size: 1.1rem;
+      color: #15803d;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Currency Converter</h2>
+
+    <label for="amount">Amount</label>
+    <input type="text" id="amount" placeholder="Enter amount" />
+
+    <label for="fromCurrency">From</label>
+    <select id="fromCurrency"></select>
+
+    <label for="toCurrency">To</label>
+    <select id="toCurrency"></select>
+
+    <button onclick="convertCurrency()">Convert</button>
+    <div class="credit">
+      <a href="biodata/index.html" target="_blank">👤 Credit & Biodata</a>
+    </div>
+    <div class="result" id="result"></div>
+    <div class="footer">Powered by smksalazharbatam.com</div>
+  </div>
+
+  <script>
+    const currencyList = [
+      { code: "IDR", name: "Indonesian Rupiah", symbol: "Rp" },
+      { code: "USD", name: "US Dollar", symbol: "$" },
+      { code: "EUR", name: "Euro", symbol: "€" },
+      { code: "JPY", name: "Japanese Yen", symbol: "¥" },
+      { code: "GBP", name: "British Pound", symbol: "£" },
+      { code: "SGD", name: "Singapore Dollar", symbol: "S$" },
+      { code: "AUD", name: "Australian Dollar", symbol: "A$" },
+      { code: "CAD", name: "Canadian Dollar", symbol: "CA$" },
+      { code: "CNY", name: "Chinese Yuan", symbol: "¥" },
+      { code: "KRW", name: "South Korean Won", symbol: "₩" },
+      { code: "MYR", name: "Malaysian Ringgit", symbol: "RM" },
+    ];
+
+    const fromCurrency = document.getElementById("fromCurrency");
+    const toCurrency = document.getElementById("toCurrency");
+    const amountInput = document.getElementById("amount");
+
+    function populateCurrencies() {
+      currencyList.forEach(currency => {
+        const option1 = document.createElement("option");
+        option1.value = currency.code;
+        option1.text = `${currency.code} - ${currency.name}`;
+        fromCurrency.appendChild(option1);
+
+        const option2 = option1.cloneNode(true);
+        toCurrency.appendChild(option2);
+      });
+      fromCurrency.value = "IDR";
+      toCurrency.value = "USD";
+    }
+
+    function getCurrencySymbol(code) {
+      const found = currencyList.find(c => c.code === code);
+      return found ? found.symbol : "";
+    }
+
+    function formatNumberInput(input) {
+      let value = input.value.replace(/[^\d.,]/g, '').replace(/,/g, '');
+      if (!value) return input.value = '';
+      const symbol = getCurrencySymbol(fromCurrency.value);
+      const formatted = parseFloat(value).toLocaleString('en-US');
+      input.value = `${symbol} ${formatted}`;
+    }
+
+    amountInput.addEventListener("input", () => formatNumberInput(amountInput));
+    fromCurrency.addEventListener("change", () => formatNumberInput(amountInput));
+
+    async function convertCurrency() {
+      let raw = amountInput.value.replace(/[^\d.,]/g, '').replace(/,/g, '');
+      const amount = parseFloat(raw);
+      const from = fromCurrency.value;
+      const to = toCurrency.value;
+      const resultDiv = document.getElementById("result");
+
+      if (!amount || isNaN(amount) || amount <= 0) {
+        resultDiv.innerHTML = "Please enter a valid amount.";
+        resultDiv.style.color = "#dc2626";
+        return;
+      }
+
+      resultDiv.innerHTML = "Converting...";
+
+      const cacheKey = `rate_${from}_${to}`;
+      const now = Date.now();
+      const cached = localStorage.getItem(cacheKey);
+      let rate = null;
+
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        const age = now - parsed.timestamp;
+        if (age < 3600000) {
+          rate = parsed.rate;
+          console.log("Using cached rate.");
+        }
+      }
+
+      if (!rate) {
+        try {
+          const url = new URL('https://api.exchangerate.host/convert');
+          url.searchParams.append('from', from);
+          url.searchParams.append('to', to);
+          url.searchParams.append('amount', 1);
+
+          const response = await fetch(url);
+          if (!response.ok) throw new Error("Network response was not ok");
+
+          const data = await response.json();
+          if (data && typeof data.result === 'number') {
+            rate = data.result;
+            localStorage.setItem(cacheKey, JSON.stringify({ rate, timestamp: now }));
+          } else {
+            throw new Error("Unexpected API response");
+          }
+        } catch (error) {
+          console.error("Fetch error:", error);
+          if (!rate) {
+            resultDiv.innerHTML = "Offline and no cached rate available.";
+            resultDiv.style.color = "#dc2626";
+            return;
+          }
+        }
+      }
+
+      const converted = amount * rate;
+      const symbol = getCurrencySymbol(to);
+      resultDiv.innerHTML = `${getCurrencySymbol(from)} ${amount.toLocaleString('en-US')} ${from} = ${symbol} ${converted.toFixed(2).toLocaleString('en-US')} ${to}`;
+      resultDiv.style.color = "#15803d";
+    }
+
+    populateCurrencies();
+  </script>
+</body>
+</html>
