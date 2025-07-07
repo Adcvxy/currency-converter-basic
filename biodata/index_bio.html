@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Web Developer - Identity</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js" crossorigin="anonymous" defer></script>
+</head>
+<body>
+  <div class="language-toggle">
+    <button onclick="switchLanguage()">🌐 Ganti Bahasa</button>
+  </div>
+
+  <div class="container">
+    <div class="card fade-in">
+      <div class="profile-img">
+        <img src="gambar.jpg" alt="Foto Profil" />
+      </div>
+      <div class="profile-info">
+        <h1 data-id="name">Adli Firmansyah</h1>
+        <p><strong data-id="birth-label">Tempat, Tanggal Lahir:</strong> <span data-id="birth">Trenggalek, 23 Oktober 2007</span></p>
+        <p><strong data-id="gender-label">Jenis Kelamin:</strong> <span data-id="gender">Laki-laki</span></p>
+        <p><strong data-id="address-label">Alamat:</strong> <span data-id="address">Kampung Dalam, Lubuk Baja, Batam</span></p>
+        <p><strong data-id="email-label">Email:</strong> <span data-id="email">adlifirmansyah003@email.com</span></p>
+        <p><strong data-id="hobby-label">Hobi:</strong> <span data-id="hobby">Coding</span></p>
+
+        <div class="social-media">
+          <a href="https://facebook.com/adlifirmansyah82" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://instagram.com/axtznv._" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+
+        <button onclick="history.back()" class="back-btn">← <span data-id="back">Kembali</span></button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const translations = {
+      id: {
+        "birth-label": "Tempat, Tanggal Lahir:",
+        birth: "Trenggalek, 23 Oktober 2007",
+        "gender-label": "Jenis Kelamin:",
+        gender: "Laki-laki",
+        "address-label": "Alamat:",
+        address: "Kampung Dalam, Lubuk Baja, Kota Batam",
+        "email-label": "Email:",
+        email: "adlifirmansyah003@email.com",
+        "hobby-label": "Hobi:",
+        hobby: "Coding",
+        back: "Kembali"
+      },
+      en: {
+        "birth-label": "Place, Date of Birth:",
+        birth: "Trenggalek, 23 October 2007",
+        "gender-label": "Gender:",
+        gender: "Male",
+        "address-label": "Address:",
+        address: "Kampung Dalam, Lubuk Baja, Kota Batam",
+        "email-label": "Email:",
+        email: "adlifirmansyah003@email.com",
+        "hobby-label": "Hobbies:",
+        hobby: "Coding",
+        back: "Go Back"
+      }
+    };
+
+    let currentLang = "id";
+
+    function switchLanguage() {
+      currentLang = currentLang === "id" ? "en" : "id";
+      for (const key in translations[currentLang]) {
+        const el = document.querySelector(`[data-id="${key}"]`);
+        if (el) el.textContent = translations[currentLang][key];
+      }
+    }
+  </script>
+</body>
+</html>
